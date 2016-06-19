@@ -9,6 +9,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
@@ -24,6 +26,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private double[] zarray = new double [buffsize];
     private TextView et_x, et_y, et_z;
     private TextView vt_x, vt_y, vt_z;
+    private TextView vt_tl, vt_tr, vt_bl, vt_br;
+    private Button btn_tl, btn_tr, btn_bl, btn_br;
+    double bx, by, bz;
     double ex = 0, ey = 0, ez = 0;
     private int iter = 0;
     private boolean bfull = false;
@@ -49,8 +54,44 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Toast.makeText(getApplicationContext(), "No accelerometer found", Toast.LENGTH_SHORT).show();
         }
 
+        btn_tl.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+                        //Log.i("I am pressed", "");
+                        btn_tl.setEnabled(false);
+                        btn_tl.setBackgroundColor(0xff00ff00);
+                        vt_tl.setText("Top Left: X"+Double.toString(bx-ex)+"Y"+Double.toString(by-ey));
+                    }
+                }
+        );
 
-
+        btn_tr.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+                        btn_tr.setEnabled(false);
+                        btn_tr.setBackgroundColor(0xff00ff00);
+                        vt_tr.setText("Top Right: X"+Double.toString(bx-ex)+"Y"+Double.toString(by-ey));
+                    }
+                }
+        );
+        btn_bl.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+                        btn_bl.setEnabled(false);
+                        btn_bl.setBackgroundColor(0xff00ff00);
+                        vt_bl.setText("Bottom Left: X"+Double.toString(bx-ex)+"Y"+Double.toString(by-ey));
+                    }
+                }
+        );
+        btn_br.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+                        btn_br.setEnabled(false);
+                        btn_br.setBackgroundColor(0xff00ff00);
+                        vt_br.setText("Bottom Right: X"+Double.toString(bx-ex)+"Y"+Double.toString(by-ey));
+                    }
+                }
+        );
 
     }
 
@@ -80,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public final void onSensorChanged(SensorEvent event) {
 
-        float bx, by, bz;
+
         double l = 0.02;
         double br, r, xa, ya;
         double sumex = 0, sumey = 0, sumez = 0;
@@ -132,6 +173,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+
+
+
+
     private void initializeVariables() {
         et_x = (TextView) findViewById(R.id.et_x);
         et_y = (TextView) findViewById(R.id.et_y);
@@ -142,6 +187,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         vt_y = (TextView) findViewById(R.id.vt_y);
         vt_z = (TextView) findViewById(R.id.vt_z);
 
+        vt_tl = (TextView) findViewById(R.id.vt_tl);
+        vt_tr = (TextView) findViewById(R.id.vt_tr);
+        vt_bl = (TextView) findViewById(R.id.vt_bl);
+        vt_br = (TextView) findViewById(R.id.vt_br);
+
+
+        btn_tl = (Button) findViewById(R.id.btn_tl);
+        btn_tr = (Button) findViewById(R.id.btn_tr);
+        btn_bl = (Button) findViewById(R.id.btn_bl);
+        btn_br = (Button) findViewById(R.id.btn_br);
 
     }
 

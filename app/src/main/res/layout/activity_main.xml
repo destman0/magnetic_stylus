@@ -28,12 +28,14 @@ android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:id="@+id/et_x"
 android:layout_below="@+id/drawingview"
+    android:layout_centerHorizontal="true"
 android:text="Earth_mag_x" />
 <TextView
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:id="@+id/et_y"
 android:layout_below="@+id/et_x"
+    android:layout_centerHorizontal="true"
 android:text="Earth_mag_y" />
 
 <TextView
@@ -41,6 +43,7 @@ android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:id="@+id/et_z"
 android:layout_below="@+id/et_y"
+    android:layout_centerHorizontal="true"
 android:text="Earth_mag_z!" />
 
 
@@ -50,12 +53,14 @@ android:text="Earth_mag_z!" />
         android:layout_height="wrap_content"
         android:id="@+id/vt_x"
         android:layout_below="@+id/et_z"
+        android:layout_centerHorizontal="true"
         android:text="Sensor_x" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/vt_y"
         android:layout_below="@+id/vt_x"
+        android:layout_centerHorizontal="true"
         android:text="Sensor_y" />
 
     <TextView
@@ -63,8 +68,69 @@ android:text="Earth_mag_z!" />
         android:layout_height="wrap_content"
         android:id="@+id/vt_z"
         android:layout_below="@+id/vt_y"
+        android:layout_centerHorizontal="true"
         android:text="Sensor_z" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vt_tl"
+        android:layout_below="@+id/vt_z"
+
+        android:text="Top Left" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vt_tr"
+        android:layout_below="@+id/vt_tl"
+
+        android:text="Top Right" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vt_bl"
+        android:layout_below="@+id/vt_tr"
+
+        android:text="Bottom Left" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vt_br"
+        android:layout_below="@+id/vt_bl"
+
+        android:text="Bottom Right" />
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/btn_tl"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+         />
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/btn_tr"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/btn_bl"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/btn_br"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>
