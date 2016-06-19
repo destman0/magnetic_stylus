@@ -52,6 +52,13 @@ public class TouchEventView extends View {
     protected float xPos;
     protected float yPos;
 
+
+    //////
+    public float screenX = 200;
+    public float screenY = 200;
+    /////
+
+
     public TouchEventView(Context context) {
         super(context);
         init();
@@ -78,6 +85,10 @@ public class TouchEventView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawBitmap(mBitmap, 0, 0, mPaint);
+
+        //Testing
+        mCanvas.drawCircle(screenX, screenY, 10, mPaintFinal);
+        //
 
         if (isDrawing){
             switch (mCurrentShape) {

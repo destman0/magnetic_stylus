@@ -95,6 +95,9 @@ android:text="Earth_mag_z!" />
 
         android:text="Bottom Left" />
 
+
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,6 +105,23 @@ android:text="Earth_mag_z!" />
         android:layout_below="@+id/vt_bl"
 
         android:text="Bottom Right" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vt_sx"
+        android:layout_below="@+id/vt_br"
+
+        android:text="Screen Coord X" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vt_sy"
+        android:layout_below="@+id/vt_sx"
+
+        android:text="Screen Coord Y" />
+
 
     <Button
         android:layout_width="30dp"

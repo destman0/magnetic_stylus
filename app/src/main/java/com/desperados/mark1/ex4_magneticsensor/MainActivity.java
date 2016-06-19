@@ -1,8 +1,10 @@
 package com.desperados.mark1.ex4_magneticsensor;
 
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.hardware.Sensor;
@@ -20,18 +22,30 @@ import 	java.lang.Math;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mSensor;
-    private int buffsize = 1000;
+
+    private TouchEventView tev;
+
+    private int buffsize = 100;
     private double[] xarray = new double [buffsize];
     private double[] yarray = new double [buffsize];
     private double[] zarray = new double [buffsize];
     private TextView et_x, et_y, et_z;
     private TextView vt_x, vt_y, vt_z;
     private TextView vt_tl, vt_tr, vt_bl, vt_br;
+    private TextView vt_sx, vt_sy;
     private Button btn_tl, btn_tr, btn_bl, btn_br;
     double bx, by, bz;
+    double dx, dy , dz;
     double ex = 0, ey = 0, ez = 0;
+    double toplx, toply, toprx, topry, botlx, botly, botrx, botry;
+    double wheight, wheight1,wheight2, wwidth, wwidth1,wwidth2;
+    double dwidth, dheight;
+    double hstep, wstep;
     private int iter = 0;
     private boolean bfull = false;
+    private boolean cready = false;
+    private int cpcount = 0;
+    //public float screenX = 200, screenY = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +74,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         //Log.i("I am pressed", "");
                         btn_tl.setEnabled(false);
                         btn_tl.setBackgroundColor(0xff00ff00);
-                        vt_tl.setText("Top Left: X"+Double.toString(bx-ex)+"Y"+Double.toString(by-ey));
+                        toplx = dx;
+                        toply = dy;
+                        int rx,ry;
+                        rx = (int)dx;
+                        ry = (int)dy;
+                        vt_tl.setText("Top Left X: "+Double.toString(rx)+"   Y: "+Double.toString(ry));
+                        cpcount = cpcount+1;
                     }
                 }
         );
@@ -70,7 +90,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     public void onClick(View v){
                         btn_tr.setEnabled(false);
                         btn_tr.setBackgroundColor(0xff00ff00);
-                        vt_tr.setText("Top Right: X"+Double.toString(bx-ex)+"Y"+Double.toString(by-ey));
+                        toprx = dx;
+                        topry = dy;
+                        int rx,ry;
+                        rx = (int)dx;
+                        ry = (int)dy;
+                        vt_tr.setText("Top Right X: "+Double.toString(rx)+"   Y: "+Double.toString(ry));
+                        cpcount = cpcount+1;
                     }
                 }
         );
@@ -79,7 +105,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     public void onClick(View v){
                         btn_bl.setEnabled(false);
                         btn_bl.setBackgroundColor(0xff00ff00);
-                        vt_bl.setText("Bottom Left: X"+Double.toString(bx-ex)+"Y"+Double.toString(by-ey));
+                        botlx = dx;
+                        botly = dy;
+                        int rx,ry;
+                        rx = (int)dx;
+                        ry = (int)dy;
+                        vt_bl.setText("Bottom Left X: "+Double.toString(rx)+"   Y: "+Double.toString(ry));
+                        cpcount = cpcount+1;
                     }
                 }
         );
@@ -88,10 +120,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     public void onClick(View v){
                         btn_br.setEnabled(false);
                         btn_br.setBackgroundColor(0xff00ff00);
-                        vt_br.setText("Bottom Right: X"+Double.toString(bx-ex)+"Y"+Double.toString(by-ey));
+                        botrx = dx;
+                        botry = dy;
+                        int rx,ry;
+                        rx = (int)dx;
+                        ry = (int)dy;
+                        vt_br.setText("Bottom Right X: "+Double.toString(rx)+"   Y: "+Double.toString(ry));
+                        cpcount = cpcount+1;
                     }
                 }
         );
+
+
 
     }
 
@@ -156,6 +196,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         bx = event.values[0];
         by = event.values[1];
         bz = event.values[2];
+
+        dx = bx - ex;
+        dy = by - ey;
+        dz = bz - ez;
         //br = - Math.sqrt(Math.pow(bx,2)+Math.pow(by,2));
         r = Math.sqrt(Math.pow(bx,2)+Math.pow(by,2)+Math.pow(bz,2));
         xa = r*Math.cos(Math.atan(by/bx));
@@ -166,12 +210,49 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         et_y.setText("Earth_y: "+Double.toString(ey));
         et_z.setText("Earth_z: "+Double.toString(ez));
 
-        vt_x.setText("X: "+Double.toString(bx-ex));
-        vt_y.setText("Y: "+Double.toString(by-ey));
-        vt_z.setText("Z: "+Double.toString(bz-ez));
+        vt_x.setText("X: "+Double.toString(dx));
+        vt_y.setText("Y: "+Double.toString(dy));
+        vt_z.setText("Z: "+Double.toString(dz));
+
+
+        if(cpcount == 4) {
+            Toast.makeText(MainActivity.this, "Workspace calibrated", Toast.LENGTH_SHORT).show();
+            cpcount = 0;
+            wwidth1 = toplx - toprx;
+            wwidth2 = botlx - botrx;
+            wheight1 = toply - botly;
+            wheight2 = topry - botry;
+            wwidth = (wwidth1+wwidth2)/2;
+            wheight = (wheight1+wheight2)/2;
+
+
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            dwidth = size.x;
+            dheight = size.y;
+
+            hstep = dheight / wheight;
+            wstep = dwidth / wwidth;
+            cready = true;
+        }
+
+        if (cready == true){
+            //Toast.makeText(MainActivity.this, "W:" +(toplx - dx)*wstep+" H:"+(toply - dy)*hstep, Toast.LENGTH_SHORT).show();
+            //tev.screenX = (float)((toplx - dx)*wstep);
+            //tev.screenY = (float)((toply - dy)*hstep);
+            vt_sx.setText(Double.toString((toplx - dx)*wstep));
+            vt_sy.setText(Double.toString((toplx - dy)*hstep));
+            //tev.invalidate();
+
+
+        }
 
 
     }
+
+
+
 
 
 
@@ -191,6 +272,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         vt_tr = (TextView) findViewById(R.id.vt_tr);
         vt_bl = (TextView) findViewById(R.id.vt_bl);
         vt_br = (TextView) findViewById(R.id.vt_br);
+
+        vt_sx = (TextView) findViewById(R.id.vt_sx);
+        vt_sy = (TextView) findViewById(R.id.vt_sy);
 
 
         btn_tl = (Button) findViewById(R.id.btn_tl);
