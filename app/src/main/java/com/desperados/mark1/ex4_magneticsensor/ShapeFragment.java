@@ -1,15 +1,12 @@
 package com.desperados.mark1.ex4_magneticsensor;
 
-        import android.app.Fragment;
-        import android.os.Bundle;
-        import android.view.LayoutInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
+import android.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
-/**
- * @author Gabriele Mariotti (gabri.mariotti@gmail.com)
- */
 public class ShapeFragment extends Fragment {
 
     protected TouchEventView mDrawingView;
