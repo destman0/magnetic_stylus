@@ -53,11 +53,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
         initializeVariables();
 
-        if (savedInstanceState == null) {
+/*        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new ShapeFragment())
                     .commit();
-        }
+        }*/
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED) != null) {
@@ -145,9 +145,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch (item.getItemId()){
+            case R.id.action_smoothline:
+                tev.mCurrentShape = TouchEventView.SMOOTHLINE;
+                tev.reset();
+                break;
+            case R.id.action_rectangle:
+                tev.mCurrentShape = TouchEventView.RECTANGLE;
+                tev.reset();
+                break;
+            case R.id.action_circle:
+                tev.mCurrentShape = TouchEventView.CIRCLE;
+                tev.reset();
+                break;
+            case R.id.action_triangle:
+                tev.mCurrentShape = TouchEventView.TRIANGLE;
+                tev.reset();
+                break;
+
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -239,11 +256,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if (cready == true){
             //Toast.makeText(MainActivity.this, "W:" +(toplx - dx)*wstep+" H:"+(toply - dy)*hstep, Toast.LENGTH_SHORT).show();
-            //tev.screenX = (float)((toplx - dx)*wstep);
-            //tev.screenY = (float)((toply - dy)*hstep);
+            tev.screenX = (float)((toplx - dx)*wstep);
+            tev.screenY = (float)((toply - dy)*hstep);
             vt_sx.setText(Double.toString((toplx - dx)*wstep));
             vt_sy.setText(Double.toString((toplx - dy)*hstep));
-            //tev.invalidate();
+            tev.invalidate();
 
 
         }
@@ -259,6 +276,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     private void initializeVariables() {
+
+        tev = (TouchEventView) findViewById(R.id.drawingview);
+
         et_x = (TextView) findViewById(R.id.et_x);
         et_y = (TextView) findViewById(R.id.et_y);
         et_z = (TextView) findViewById(R.id.et_z);

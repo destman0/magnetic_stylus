@@ -22,12 +22,19 @@
     tools:context="com.desperados.mark1.ex4_magneticsensor.MainActivity"
     tools:ignore="MergeRootFrame" >
 
+    <com.desperados.mark1.ex4_magneticsensor.TouchEventView
+        android:id="@+id/drawingview"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+    </com.desperados.mark1.ex4_magneticsensor.TouchEventView>
+
+
 <TextView
 
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:id="@+id/et_x"
-android:layout_below="@+id/drawingview"
     android:layout_centerHorizontal="true"
 android:text="Earth_mag_x" />
 <TextView
