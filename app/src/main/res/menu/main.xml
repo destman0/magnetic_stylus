@@ -18,6 +18,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="it.gmariotti.android.example.shapefinger.MainActivity" >
 
+
+    <item android:id="@+id/action_debug"
+        android:title="@string/action_debug"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+
     <item android:id="@+id/action_smoothline"
         android:title="@string/action_smoothline"
         android:orderInCategory="100"

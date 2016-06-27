@@ -17,6 +17,7 @@ package com.desperados.mark1.ex4_magneticsensor;
 
 public class TouchEventView extends View {
 
+    public static final int DEBUG = 0;
     public static final int LINE = 1;
     public static final int RECTANGLE = 3;
     public static final int SQUARE = 4;
@@ -54,8 +55,9 @@ public class TouchEventView extends View {
 
 
     //////
-    public float screenX = 500;
-    public float screenY = 1000;
+    //public int debug = 1;
+    public float screenX = 0;
+    public float screenY = 0;
     /////
 
 
@@ -87,6 +89,8 @@ public class TouchEventView extends View {
         canvas.drawBitmap(mBitmap, 0, 0, mPaint);
 
         //Testing
+        //if (debug == 1)
+        if(mCurrentShape==DEBUG)
         mCanvas.drawCircle(screenX, screenY, 10, mPaintFinal);
         //
 
@@ -138,8 +142,10 @@ public class TouchEventView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        xPos = event.getX();
-        yPos = event.getY();
+        //xPos = event.getX();
+        //yPos = event.getY();
+        xPos = screenX;
+        yPos = screenY;
         switch (mCurrentShape) {
             case SMOOTHLINE:
                 onTouchEventSmoothLine(event);

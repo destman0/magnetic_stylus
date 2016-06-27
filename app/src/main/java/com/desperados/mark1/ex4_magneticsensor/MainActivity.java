@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initializeVariables();
+        tev.mCurrentShape = TouchEventView.DEBUG;
 
 /*        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -149,20 +150,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
+            case R.id.action_debug:
+                tev.mCurrentShape = TouchEventView.DEBUG;
+                //tev.debug = 0;
+                tev.reset();
+                break;
             case R.id.action_smoothline:
                 tev.mCurrentShape = TouchEventView.SMOOTHLINE;
+                //tev.debug = 0;
                 tev.reset();
                 break;
             case R.id.action_rectangle:
                 tev.mCurrentShape = TouchEventView.RECTANGLE;
+                //tev.debug = 0;
                 tev.reset();
                 break;
             case R.id.action_circle:
                 tev.mCurrentShape = TouchEventView.CIRCLE;
+                //tev.debug = 0;
                 tev.reset();
                 break;
             case R.id.action_triangle:
                 tev.mCurrentShape = TouchEventView.TRIANGLE;
+                //tev.debug = 0;
                 tev.reset();
                 break;
 
