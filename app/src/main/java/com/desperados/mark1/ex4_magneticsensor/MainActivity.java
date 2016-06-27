@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     double wheight, wheight1,wheight2, wwidth, wwidth1,wwidth2;
     double dwidth, dheight;
     double hstep, wstep;
+    double l = 0.01;
+    double dr, r, xa, ya;
     private int iter = 0;
     private boolean bfull = false;
     private boolean cready = false;
@@ -179,8 +181,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public final void onSensorChanged(SensorEvent event) {
 
 
-        double l = 0.02;
-        double br, r, xa, ya;
+
         double sumex = 0, sumey = 0, sumez = 0;
         //Log.i("EX", ""+ex);
         //Log.i("EY", ""+ey);
@@ -217,11 +218,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         dx = bx - ex;
         dy = by - ey;
         dz = bz - ez;
-        //br = - Math.sqrt(Math.pow(bx,2)+Math.pow(by,2));
-        r = Math.sqrt(Math.pow(bx,2)+Math.pow(by,2)+Math.pow(bz,2));
-        xa = r*Math.cos(Math.atan(by/bx));
-        ya = r*Math.sin(Math.atan(by/bx));
 
+        geometryCalc();
+        //vt_sx.setText(Double.toString(xa));
+        //vt_sy.setText(Double.toString(ya));
 
         et_x.setText("Earth_x: "+Double.toString(ex));
         et_y.setText("Earth_y: "+Double.toString(ey));
@@ -303,6 +303,49 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btn_br = (Button) findViewById(R.id.btn_br);
 
     }
+
+
+    private void geometryCalc(){
+        dr = - Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+        r=bisectionMethod();
+        xa = r*Math.cos(Math.atan(dy/dx));
+        ya = r*Math.sin(Math.atan(dy/dx));
+        dx = xa;
+        dy = ya;
+
+    }
+
+
+    private double bisectionMethod(){
+        double a = 0.001,b=1,p,fa,fp,tol = 0.00001;
+        int n = 500,iter;
+
+        iter = 1;
+        fa=equationFunc(a);
+
+        while (iter<=n){
+            p = a + (b-a)/2;
+            fp = equationFunc(p);
+
+            if ((fp == 0) || ((b-a) < tol))
+                return p;
+            iter = iter+1;
+
+            if (fp*fa > 0){
+                a = p;
+                fa = fp;
+            }
+            else
+                b=p;
+        }
+        return 0.01;
+    }
+
+    private double equationFunc(double esr){
+        return Math.pow(l/esr,5)+3*Math.pow(l/esr,3)+(3-Math.pow(dr/dz,2))*(l/esr)+2*dr/dz;
+    }
+
+
 
 }
 

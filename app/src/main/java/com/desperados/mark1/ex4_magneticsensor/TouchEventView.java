@@ -54,8 +54,8 @@ public class TouchEventView extends View {
 
 
     //////
-    public float screenX = 200;
-    public float screenY = 200;
+    public float screenX = 500;
+    public float screenY = 1000;
     /////
 
 
