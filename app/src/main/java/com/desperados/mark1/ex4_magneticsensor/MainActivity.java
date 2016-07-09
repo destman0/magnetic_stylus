@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private TouchEventView tev;
 
-    private int buffsize = 100;
+    private int buffsize = 1000;
     private double[] xarray = new double [buffsize];
     private double[] yarray = new double [buffsize];
     private double[] zarray = new double [buffsize];
@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }*/
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
-            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED) != null) {
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED);
             mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
         } else {
