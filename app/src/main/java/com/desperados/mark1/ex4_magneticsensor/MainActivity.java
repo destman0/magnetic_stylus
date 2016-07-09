@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initializeVariables();
-        tev.mCurrentShape = TouchEventView.DEBUG;
+        tev.activeShape = TouchEventView.DEBUG;
 
 /*        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }*/
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED) != null) {
-            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED);
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
             mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
         } else {
@@ -151,27 +151,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         switch (item.getItemId()){
             case R.id.action_debug:
-                tev.mCurrentShape = TouchEventView.DEBUG;
+                tev.activeShape = TouchEventView.DEBUG;
                 //tev.debug = 0;
                 tev.reset();
                 break;
             case R.id.action_smoothline:
-                tev.mCurrentShape = TouchEventView.SMOOTHLINE;
+                tev.activeShape = TouchEventView.SMOOTHLINE;
                 //tev.debug = 0;
                 tev.reset();
                 break;
             case R.id.action_rectangle:
-                tev.mCurrentShape = TouchEventView.RECTANGLE;
+                tev.activeShape = TouchEventView.RECTANGLE;
                 //tev.debug = 0;
                 tev.reset();
                 break;
             case R.id.action_circle:
-                tev.mCurrentShape = TouchEventView.CIRCLE;
+                tev.activeShape = TouchEventView.CIRCLE;
                 //tev.debug = 0;
                 tev.reset();
                 break;
             case R.id.action_triangle:
-                tev.mCurrentShape = TouchEventView.TRIANGLE;
+                tev.activeShape = TouchEventView.TRIANGLE;
                 //tev.debug = 0;
                 tev.reset();
                 break;

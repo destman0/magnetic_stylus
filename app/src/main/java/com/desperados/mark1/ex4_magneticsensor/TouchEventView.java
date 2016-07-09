@@ -18,9 +18,7 @@ package com.desperados.mark1.ex4_magneticsensor;
 public class TouchEventView extends View {
 
     public static final int DEBUG = 0;
-    public static final int LINE = 1;
     public static final int RECTANGLE = 3;
-    public static final int SQUARE = 4;
     public static final int CIRCLE = 5;
     public static final int TRIANGLE = 6;
     public static final int SMOOTHLINE = 2;
@@ -28,27 +26,20 @@ public class TouchEventView extends View {
     public static final float TOUCH_TOLERANCE = 4;
     public static final float TOUCH_STROKE_WIDTH = 5;
 
-    public int mCurrentShape;
+    public int activeShape;
 
-    protected Path mPath;
-    protected Paint mPaint;
-    protected Paint mPaintFinal;
-    protected Bitmap mBitmap;
-    protected Canvas mCanvas;
+    protected Path pathToDraw;
+    protected Paint initialPaint;
+    protected Paint endingPaint;
+    protected Bitmap bitmapImage;
+    protected Canvas drawingCanvas;
 
-    /**
-     * Indicates if you are drawing
-     */
-    protected boolean isDrawing = false;
+    /* Check for drawing */
+    protected boolean drawingActive = false;
+    
 
-    /**
-     * Indicates if the drawing is ended
-     */
-    protected boolean isDrawingEnded = false;
-
-
-    protected float mStartX;
-    protected float mStartY;
+    protected float beginX;
+    protected float beginY;
 
     protected float xPos;
     protected float yPos;
@@ -77,25 +68,25 @@ public class TouchEventView extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
+    protected void onSizeChanged(int width, int height, int prevW, int prevH) {
+        super.onSizeChanged(width, height, prevW, prevH);
+        bitmapImage = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        drawingCanvas = new Canvas(bitmapImage);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawBitmap(mBitmap, 0, 0, mPaint);
+        canvas.drawBitmap(bitmapImage, 0, 0, initialPaint);
 
         //Testing
         //if (debug == 1)
-        if(mCurrentShape==DEBUG)
-        mCanvas.drawCircle(screenX, screenY, 10, mPaintFinal);
+        if(activeShape==DEBUG)
+            drawingCanvas.drawCircle(screenX, screenY, 10, endingPaint);
         //
 
-        if (isDrawing){
-            switch (mCurrentShape) {
+        if (drawingActive){
+            switch (activeShape) {
                 case RECTANGLE:
                     onDrawRectangle(canvas);
                     break;
@@ -113,40 +104,39 @@ public class TouchEventView extends View {
 
 
     protected void init() {
-        mPath = new Path();
+        pathToDraw = new Path();
 
-        mPaint = new Paint(Paint.DITHER_FLAG);
-        mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
-        mPaint.setColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(TOUCH_STROKE_WIDTH);
+        initialPaint = new Paint(Paint.DITHER_FLAG);
+        initialPaint.setAntiAlias(true);
+        initialPaint.setDither(true);
+        initialPaint.setColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
+        initialPaint.setStyle(Paint.Style.STROKE);
+        initialPaint.setStrokeJoin(Paint.Join.ROUND);
+        initialPaint.setStrokeCap(Paint.Cap.ROUND);
+        initialPaint.setStrokeWidth(TOUCH_STROKE_WIDTH);
 
 
-        mPaintFinal = new Paint(Paint.DITHER_FLAG);
-        mPaintFinal.setAntiAlias(true);
-        mPaintFinal.setDither(true);
-        mPaintFinal.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
-        mPaintFinal.setStyle(Paint.Style.STROKE);
-        mPaintFinal.setStrokeJoin(Paint.Join.ROUND);
-        mPaintFinal.setStrokeCap(Paint.Cap.ROUND);
-        mPaintFinal.setStrokeWidth(TOUCH_STROKE_WIDTH);
+        endingPaint = new Paint(Paint.DITHER_FLAG);
+        endingPaint.setAntiAlias(true);
+        endingPaint.setDither(true);
+        endingPaint.setColor(getContext().getResources().getColor(android.R.color.holo_orange_dark));
+        endingPaint.setStyle(Paint.Style.STROKE);
+        endingPaint.setStrokeJoin(Paint.Join.ROUND);
+        endingPaint.setStrokeCap(Paint.Cap.ROUND);
+        endingPaint.setStrokeWidth(TOUCH_STROKE_WIDTH);
     }
 
     protected void reset() {
-        mPath = new Path();
+        pathToDraw = new Path();
         countTouch=0;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //xPos = event.getX();
-        //yPos = event.getY();
+
         xPos = screenX;
         yPos = screenY;
-        switch (mCurrentShape) {
+        switch (activeShape) {
             case SMOOTHLINE:
                 onTouchEventSmoothLine(event);
                 break;
@@ -163,49 +153,44 @@ public class TouchEventView extends View {
         return true;
     }
 
-    //------------------------------------------------------------------
-    // Smooth Line
-    //------------------------------------------------------------------
-
+    // Drawable line
 
     private void onTouchEventSmoothLine(MotionEvent event) {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                isDrawing = true;
-                mStartX = xPos;
-                mStartY = yPos;
+                drawingActive = true;
+                beginX = xPos;
+                beginY = yPos;
 
-                mPath.reset();
-                mPath.moveTo(xPos, yPos);
+                pathToDraw.reset();
+                pathToDraw.moveTo(xPos, yPos);
 
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
 
-                float dx = Math.abs(xPos - mStartX);
-                float dy = Math.abs(yPos - mStartY);
-                if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-                    mPath.quadTo(mStartX, mStartY, (xPos + mStartX) / 2, (yPos + mStartY) / 2);
-                    mStartX = xPos;
-                    mStartY = yPos;
+                float distanceX = Math.abs(xPos - beginX);
+                float distanceY = Math.abs(yPos - beginY);
+                if (distanceX >= TOUCH_TOLERANCE || distanceY >= TOUCH_TOLERANCE) {
+                    pathToDraw.quadTo(beginX, beginY, (xPos + beginX) / 2, (yPos + beginY) / 2);
+                    beginX = xPos;
+                    beginY = yPos;
                 }
-                mCanvas.drawPath(mPath, mPaint);
+                drawingCanvas.drawPath(pathToDraw, initialPaint);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                isDrawing = false;
-                mPath.lineTo(mStartX, mStartY);
-                mCanvas.drawPath(mPath, mPaintFinal);
-                mPath.reset();
+                drawingActive = false;
+                pathToDraw.lineTo(beginX, beginY);
+                drawingCanvas.drawPath(pathToDraw, endingPaint);
+                pathToDraw.reset();
                 invalidate();
                 break;
         }
     }
 
-    //------------------------------------------------------------------
-    // Triangle
-    //------------------------------------------------------------------
+    // Two stroke triangle
 
     int countTouch =0;
     float basexTriangle =0;
@@ -214,10 +199,10 @@ public class TouchEventView extends View {
     private void onDrawTriangle(Canvas canvas){
 
         if (countTouch<3){
-            canvas.drawLine(mStartX,mStartY,xPos,yPos,mPaint);
+            canvas.drawLine(beginX,beginY,xPos,yPos,initialPaint);
         }else if (countTouch==3){
-            canvas.drawLine(xPos,yPos,mStartX,mStartY,mPaint);
-            canvas.drawLine(xPos,yPos,basexTriangle,baseyTriangle,mPaint);
+            canvas.drawLine(xPos,yPos,beginX,beginY,initialPaint);
+            canvas.drawLine(xPos,yPos,basexTriangle,baseyTriangle,initialPaint);
         }
     }
 
@@ -227,11 +212,11 @@ public class TouchEventView extends View {
             case MotionEvent.ACTION_DOWN:
                 countTouch++;
                 if (countTouch==1){
-                    isDrawing = true;
-                    mStartX = xPos;
-                    mStartY = yPos;
+                    drawingActive = true;
+                    beginX = xPos;
+                    beginY = yPos;
                 } else if (countTouch==3){
-                    isDrawing = true;
+                    drawingActive = true;
                 }
                 invalidate();
                 break;
@@ -240,14 +225,14 @@ public class TouchEventView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 countTouch++;
-                isDrawing = false;
+                drawingActive = false;
                 if (countTouch<3){
                     basexTriangle=xPos;
                     baseyTriangle=yPos;
-                    mCanvas.drawLine(mStartX,mStartY,xPos,yPos,mPaintFinal);
+                    drawingCanvas.drawLine(beginX,beginY,xPos,yPos,endingPaint);
                 } else if (countTouch>=3){
-                    mCanvas.drawLine(xPos,yPos,mStartX,mStartY,mPaintFinal);
-                    mCanvas.drawLine(xPos,yPos,basexTriangle,baseyTriangle,mPaintFinal);
+                    drawingCanvas.drawLine(xPos,yPos,beginX,beginY,endingPaint);
+                    drawingCanvas.drawLine(xPos,yPos,basexTriangle,baseyTriangle,endingPaint);
                     countTouch =0;
                 }
                 invalidate();
@@ -255,37 +240,33 @@ public class TouchEventView extends View {
         }
     }
 
-    //------------------------------------------------------------------
-    // Circle
-    //------------------------------------------------------------------
+    // Midpoint drawable circle
 
     private void onDrawCircle(Canvas canvas){
-        canvas.drawCircle(mStartX, mStartY, calculateRadius(mStartX, mStartY, xPos, yPos), mPaint);
+        canvas.drawCircle(beginX, beginY, calculateRadius(beginX, beginY, xPos, yPos), initialPaint);
     }
 
     private void onTouchEventCircle(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                isDrawing = true;
-                mStartX = xPos;
-                mStartY = yPos;
+                drawingActive = true;
+                beginX = xPos;
+                beginY = yPos;
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                isDrawing = false;
-                mCanvas.drawCircle(mStartX, mStartY, calculateRadius(mStartX,mStartY,xPos,yPos), mPaintFinal);
+                drawingActive = false;
+                drawingCanvas.drawCircle(beginX, beginY, calculateRadius(beginX,beginY,xPos,yPos), endingPaint);
                 invalidate();
                 break;
         }
     }
 
-    /**
-     *
-     * @return
-     */
+    // @return
+
     protected float calculateRadius(float x1, float y1, float x2, float y2) {
 
         return (float) Math.sqrt(
@@ -294,29 +275,27 @@ public class TouchEventView extends View {
         );
     }
 
-    //------------------------------------------------------------------
     // Rectangle
-    //------------------------------------------------------------------
 
     private void onDrawRectangle(Canvas canvas) {
-        drawRectangle(canvas,mPaint);
+        drawRectangle(canvas,initialPaint);
     }
 
     private void onTouchEventRectangle(MotionEvent event) {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                isDrawing = true;
-                mStartX = xPos;
-                mStartY = yPos;
+                drawingActive = true;
+                beginX = xPos;
+                beginY = yPos;
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                isDrawing = false;
-                drawRectangle(mCanvas,mPaintFinal);
+                drawingActive = false;
+                drawRectangle(drawingCanvas,endingPaint);
                 invalidate();
                 break;
         }
@@ -324,10 +303,10 @@ public class TouchEventView extends View {
     }
 
     private void drawRectangle(Canvas canvas,Paint paint){
-        float right = mStartX > xPos ? mStartX : xPos;
-        float left = mStartX > xPos ? xPos : mStartX;
-        float bottom = mStartY > yPos ? mStartY : yPos;
-        float top = mStartY > yPos ? yPos : mStartY;
+        float right = beginX > xPos ? beginX : xPos;
+        float left = beginX > xPos ? xPos : beginX;
+        float bottom = beginY > yPos ? beginY : yPos;
+        float top = beginY > yPos ? yPos : beginY;
         canvas.drawRect(left, top , right, bottom, paint);
     }
 
